@@ -1,9 +1,9 @@
-import { signInWithPopup } from 'firebase/auth';
+import { signInWithPopup, signOut } from 'firebase/auth';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { selectUserName, selectUserPhoto, setUserLoginDetails } from '../features/user/userSlice';
+import { selectUserName, selectUserPhoto, setSignOutState, setUserLoginDetails } from '../features/user/userSlice';
 import { auth, provider } from '../firebase';
 
 const Header = props => {
@@ -23,12 +23,23 @@ const Header = props => {
     });
   }, [username]);
 
-  //! google authentication
+  //! google authentication (look at the docs)
   const handleAuth = async () => {
-    try {
-      signInWithPopup(auth, provider).then(result => setUser(result.user));
-    } catch (err) {
-      alert(err.message);
+    if (!username) {
+      try {
+        signInWithPopup(auth, provider).then(result => setUser(result.user));
+      } catch (err) {
+        alert(err.message);
+      }
+    } else if (username) {
+      signOut(auth)
+        .then(() => {
+          dispatch(setSignOutState());
+          navigate('/');
+        })
+        .catch(err => {
+          alert(err.message);
+        });
     }
   };
 
@@ -80,7 +91,12 @@ const Header = props => {
               <span>SERIES</span>
             </a>
           </NavMenu>
-          <UserImg src={userPhoto} alt={username} />
+          <SignOut>
+            <UserImg src={userPhoto} alt={username} />
+            <Dropdown>
+              <span onClick={handleAuth}>Sign out</span>
+            </Dropdown>
+          </SignOut>
         </>
       )}
     </Nav>
@@ -192,6 +208,45 @@ const Login = styled.a`
 
 const UserImg = styled.img`
   height: 100%;
+`;
+
+const Dropdown = styled.div`
+  position: absolute;
+  top: 48px;
+  right: 0px;
+  background: rgb(19, 19, 19);
+  border: 1px solid rgba(151, 151, 151, 0.34);
+  border-radius: 4px;
+  box-shadow: rgb(0 0 0 / 50%) 0px 0px 18px 0px;
+  padding: 10px;
+  font-size: 14px;
+  letter-spacing: 3px;
+  width: 100px;
+  opacity: 0;
+`;
+
+const SignOut = styled.div`
+  position: relative;
+  height: 48px;
+  width: 48px;
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+
+  //! buradaki style'lar sadece signout olacağı zaman geçerli
+  ${UserImg} {
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+  }
+  //! hover olduğunda dropdown'a aşağıdaki style'lar ekleniyor.
+  &:hover {
+    ${Dropdown} {
+      opacity: 1;
+      transition-duration: 1s;
+    }
+  }
 `;
 
 export default Header;
