@@ -1,32 +1,27 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
+import { selectRecommend } from '../features/movie/movieSlice';
 
 const Recommends = () => {
+  //! retrieving data from redux
+  const movies = useSelector(selectRecommend);
+  // console.log(movies);
+
   return (
     <Container>
-      Recommended For You
+      <h4>Recommended For You</h4>
       <Content>
-        <Wrap>
-          <NavLink to='/'>
-            <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWNlIk1CWTg-6UmBQfuv9wnAgjKxGdnPNaoQ&usqp=CAU' alt='' />
-          </NavLink>
-        </Wrap>
-        <Wrap>
-          <NavLink to='/'>
-            <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWNlIk1CWTg-6UmBQfuv9wnAgjKxGdnPNaoQ&usqp=CAU' alt='' />
-          </NavLink>
-        </Wrap>
-        <Wrap>
-          <NavLink to='/'>
-            <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWNlIk1CWTg-6UmBQfuv9wnAgjKxGdnPNaoQ&usqp=CAU' alt='' />
-          </NavLink>
-        </Wrap>
-        <Wrap>
-          <NavLink to='/'>
-            <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWNlIk1CWTg-6UmBQfuv9wnAgjKxGdnPNaoQ&usqp=CAU' alt='' />
-          </NavLink>
-        </Wrap>
+        {movies &&
+          movies.map((movie, key) => (
+            <Wrap key={key}>
+              {movie.id}
+              <NavLink to={'/detail/' + movie.id}>
+                <img src={movie.cardImg} alt={movie.title} />
+              </NavLink>
+            </Wrap>
+          ))}
       </Content>
     </Container>
   );
