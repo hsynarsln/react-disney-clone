@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { db } from '../firebase';
 
 const Detail = props => {
+  //! route kullanarak tıklanan elementin id'sini elde etme
   const { id } = useParams();
   const [detailData, setDetailData] = useState({});
 
