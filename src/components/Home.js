@@ -31,10 +31,10 @@ const Home = props => {
         case 'recommend':
           recommends = [...recommends, { id: doc.id, ...doc.data() }];
           break;
-        case 'original':
+        case 'new':
           newDisneys = [...newDisneys, { id: doc.id, ...doc.data() }];
           break;
-        case 'new':
+        case 'original':
           originals = [...originals, { id: doc.id, ...doc.data() }];
           break;
         case 'trending':
